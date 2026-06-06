@@ -36,6 +36,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import reactor.core.Disposable;
 import reactor.core.Disposables;
 
@@ -43,6 +45,7 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 
 @RequiredArgsConstructor
+@Order(Ordered.LOWEST_PRECEDENCE) // 最后启动写缓冲，等 DeviceProductDeployHandler 注册完 device_log_* 等表元数据
 public class DefaultTimescaleDBOperations implements TimescaleDBOperations, ApplicationContextAware, CommandLineRunner {
 
     private final TimescaleDBProperties properties;
@@ -114,6 +117,7 @@ public class DefaultTimescaleDBOperations implements TimescaleDBOperations, Appl
 
     @Override
     public void run(String... args) {
+        // 写缓冲消费 /device/** 消息；须在物模型存储元数据注册之后启动（见 @Order）
         if (writer != null) {
             SpringApplication
                 .getShutdownHandlers()

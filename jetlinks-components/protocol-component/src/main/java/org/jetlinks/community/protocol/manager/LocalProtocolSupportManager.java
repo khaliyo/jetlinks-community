@@ -30,6 +30,7 @@ import org.jetlinks.supports.protocol.management.ProtocolSupportDefinition;
 import org.jetlinks.supports.protocol.management.ProtocolSupportLoader;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -41,6 +42,7 @@ import java.util.function.Consumer;
  */
 @AllArgsConstructor
 @Slf4j
+@Order(10) // 须先于 DeviceProductDeployHandler：产品 register 依赖 messageProtocol 已装入 StaticProtocolSupports
 public class LocalProtocolSupportManager
     extends StaticProtocolSupports implements CommandLineRunner {
 
@@ -185,6 +187,7 @@ public class LocalProtocolSupportManager
 
     @Override
     public void run(String... args) {
+        // 同步 block 加载 dev_protocol 中已启用的协议（含 JetLinks 官方协议的数据库 ID）
         init();
     }
 

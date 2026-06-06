@@ -96,6 +96,14 @@ public class TransparentMessageCodecEntity extends GenericEntity<String> impleme
     }
 
     public static String createId(String productId, String deviceId) {
-        return DigestUtils.md5Hex(String.join("|", productId, deviceId));
+        // 勿用 String.join：deviceId 为 null 时会拼成字面量 "null"，与库中 device_id='' 的记录 id 不一致
+        String product = productId == null ? "" : productId;
+        String device = StringUtils.hasText(deviceId) ? deviceId : "";
+        return DigestUtils.md5Hex(product + "|" + device);
+    }
+
+    /** 产品级规则 deviceId 统一为 null，与缓存键、查询一致 */
+    public static String normalizeDeviceId(String deviceId) {
+        return StringUtils.hasText(deviceId) ? deviceId : null;
     }
 }

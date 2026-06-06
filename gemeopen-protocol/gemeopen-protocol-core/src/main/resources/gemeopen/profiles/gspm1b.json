@@ -1,0 +1,137 @@
+{
+  "profileVersion": "1",
+  "productId": "gspm1b",
+  "name": "GSPM1B智能插座",
+  "deviceModelHint": "GSPM1B",
+  "topic": {
+    "upstream": "/{productId}/{deviceId}/up",
+    "downstream": "/{productId}/{deviceId}/down"
+  },
+  "propertyMapping": {
+    "key": "switchState",
+    "current": "current",
+    "power": "power",
+    "voltage": "voltage",
+    "energy": "energy",
+    "signal": "signal",
+    "onState": "onState",
+    "keyLock": "keyLock",
+    "wifiLock": "wifiLock",
+    "timerEnable": "timerEnable",
+    "timerInterval": "timerInterval",
+    "version": "version",
+    "ip": "ip",
+    "ssid": "ssid"
+  },
+  "enumProperties": [
+    "switchState",
+    "onState",
+    "keyLock",
+    "wifiLock",
+    "timerEnable"
+  ],
+  "intProperties": [
+    "signal",
+    "timerInterval"
+  ],
+  "commandResponse": {
+    "rules": [
+      {
+        "source": "command"
+      },
+      {
+        "commandNameIn": [
+          "info-all",
+          "info-statistic"
+        ],
+        "sourceNot": "auto",
+        "requireMessageId": true
+      }
+    ]
+  },
+  "events": {
+    "controllerEvent": {
+      "match": {
+        "commandName": "controller-event"
+      },
+      "payload": [
+        "key",
+        "onState",
+        "mac"
+      ]
+    }
+  },
+  "functions": {
+    "powerControl": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "key": "${inputs.key}"
+        }
+      }
+    },
+    "restart": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "system": "restart"
+        }
+      }
+    },
+    "queryInfo": {
+      "downstream": {
+        "type": "info",
+        "fields": {}
+      }
+    },
+    "queryStatistic": {
+      "downstream": {
+        "type": "statistic",
+        "fields": {}
+      }
+    },
+    "setTimerReport": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "timerEnable": "${inputs.timerEnable}",
+          "timerInterval": "${inputs.timerInterval}"
+        }
+      }
+    },
+    "setKeyLock": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "keyLock": "${inputs.keyLock}"
+        }
+      }
+    },
+    "setOnState": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "onState": "${inputs.onState}"
+        }
+      }
+    },
+    "setWifiLock": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "wifiLock": "${inputs.wifiLock}"
+        }
+      }
+    }
+  },
+  "writeProperties": {
+    "switchState": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "key": "${value}"
+        }
+      }
+    }
+  }
+}
