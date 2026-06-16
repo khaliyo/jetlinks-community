@@ -430,6 +430,12 @@
             <artifactId>plugin-component</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>cn.gemeopen</groupId>
+            <artifactId>gemeopen-protocol-jetlinks</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 

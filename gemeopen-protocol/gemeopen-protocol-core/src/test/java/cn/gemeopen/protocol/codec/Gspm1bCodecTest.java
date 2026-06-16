@@ -99,6 +99,22 @@ class Gspm1bCodecTest {
         assertTrue(json.contains("\"type\":\"event\""));
     }
 
+
+    @Test
+    void readPropertyDownstreamUsesInfoByDefault() {
+        DownstreamEncoder.EncodedDownstream encoded = downstream.encodeReadProperty(List.of("switchState"), "777");
+        String json = new String(encoded.payload());
+        assertTrue(json.contains("\"type\":\"info\""));
+        assertTrue(json.contains("\"messageId\":\"777\""));
+    }
+
+    @Test
+    void readPropertyDownstreamUsesStatisticForFloat() {
+        DownstreamEncoder.EncodedDownstream encoded = downstream.encodeReadProperty(List.of("current"), "666");
+        String json = new String(encoded.payload());
+        assertTrue(json.contains("\"type\":\"statistic\""));
+    }
+
     @Test
     void parseUpstreamTopic() {
         var info = TopicPaths.parseUpstreamTopic("/gspm1b/c82b96f821e2/up").orElseThrow();

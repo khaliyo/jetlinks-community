@@ -21,7 +21,11 @@
     "timerInterval": "timerInterval",
     "version": "version",
     "ip": "ip",
-    "ssid": "ssid"
+    "ssid": "ssid",
+    "mac": "mac",
+    "type": "deviceType",
+    "commandName": "lastCommandName",
+    "source": "lastSource"
   },
   "enumProperties": [
     "switchState",
@@ -133,5 +137,11 @@
         }
       }
     }
-  }
+  },
+  "floatProperties": [
+    "current",
+    "power",
+    "voltage",
+    "energy"
+  ]
 }

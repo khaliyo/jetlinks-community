@@ -1,0 +1,225 @@
+{
+  "profileVersion": "1",
+  "productId": "gscw1m2p",
+  "name": "GSCW1M2P二路智能开关",
+  "deviceModelHint": "GSCW1M2P",
+  "topic": {
+    "upstream": "/{productId}/{deviceId}/up",
+    "downstream": "/{productId}/{deviceId}/down"
+  },
+  "propertyMapping": {
+    "key1": "switchState1",
+    "key2": "switchState2",
+    "current": "current",
+    "power": "power",
+    "voltage": "voltage",
+    "energy": "energy",
+    "signal": "signal",
+    "onState1": "onState1",
+    "onState2": "onState2",
+    "name1": "name1",
+    "name2": "name2",
+    "keyLock": "keyLock",
+    "wifiLock": "wifiLock",
+    "timerEnable": "timerEnable",
+    "timerInterval": "timerInterval",
+    "version": "version",
+    "ip": "ip",
+    "ssid": "ssid",
+    "mac": "mac",
+    "type": "deviceType"
+  },
+  "enumProperties": [
+    "switchState1",
+    "switchState2",
+    "onState1",
+    "onState2",
+    "keyLock",
+    "wifiLock",
+    "timerEnable"
+  ],
+  "intProperties": [
+    "signal",
+    "timerInterval"
+  ],
+  "floatProperties": [
+    "current",
+    "power",
+    "voltage",
+    "energy"
+  ],
+  "events": {
+    "controllerEvent": {
+      "match": {
+        "commandName": "controller-event"
+      },
+      "payload": [
+        "key1",
+        "key2",
+        "onState1",
+        "onState2",
+        "mac"
+      ]
+    }
+  },
+  "commandResponse": {
+    "rules": [
+      {
+        "source": "command"
+      },
+      {
+        "commandNameIn": [
+          "info-all",
+          "info-statistic"
+        ],
+        "sourceNot": "auto",
+        "requireMessageId": true
+      }
+    ]
+  },
+  "functions": {
+    "restart": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "system": "restart"
+        }
+      }
+    },
+    "reset": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "system": "reset"
+        }
+      }
+    },
+    "energyClear": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "system": "clear"
+        }
+      }
+    },
+    "queryInfo": {
+      "downstream": {
+        "type": "info",
+        "fields": {}
+      }
+    },
+    "queryStatistic": {
+      "downstream": {
+        "type": "statistic",
+        "fields": {}
+      }
+    },
+    "setTimerReport": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "timerEnable": "${inputs.timerEnable}",
+          "timerInterval": "${inputs.timerInterval}"
+        }
+      }
+    },
+    "setKeyLock": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "keyLock": "${inputs.keyLock}"
+        }
+      }
+    },
+    "setWifiLock": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "wifiLock": "${inputs.wifiLock}"
+        }
+      }
+    },
+    "setOnState1": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "onState1": "${inputs.onState1}"
+        }
+      }
+    },
+    "setOnState2": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "onState2": "${inputs.onState2}"
+        }
+      }
+    }
+  },
+  "writeProperties": {
+    "switchState1": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "key1": "${value}"
+        }
+      }
+    },
+    "switchState2": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "key2": "${value}"
+        }
+      }
+    },
+    "timerEnable": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "timerEnable": "${value}"
+        }
+      }
+    },
+    "timerInterval": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "timerInterval": "${value}"
+        }
+      }
+    },
+    "onState1": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "onState1": "${value}"
+        }
+      }
+    },
+    "onState2": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "onState2": "${value}"
+        }
+      }
+    },
+    "keyLock": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "keyLock": "${value}"
+        }
+      }
+    },
+    "wifiLock": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "wifiLock": "${value}"
+        }
+      }
+    }
+  }
+}

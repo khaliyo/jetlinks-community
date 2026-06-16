@@ -5,13 +5,14 @@ import cn.gemeopen.protocol.util.JsonWriters;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class DownstreamEncoder {
 
     private static final Set<String> INT_KEYS = Set.of(
-        "key", "timerEnable", "timerInterval", "keyLock", "onState", "wifiLock"
+        "key", "key1", "key2", "timerEnable", "timerInterval", "keyLock", "onState", "onState1", "onState2", "wifiLock"
     );
 
     private final ProductProfile profile;
@@ -35,6 +36,26 @@ public class DownstreamEncoder {
         }
         Map<String, Object> ctx = Map.of("value", value);
         return encodeTemplate(rule.getDownstream(), Map.of(), ctx, messageId);
+    }
+
+    public EncodedDownstream encodeReadProperty(List<String> properties, String messageId) {
+        if (messageId == null || messageId.isBlank()) {
+            throw new IllegalArgumentException("missing platform messageId on downstream encode");
+        }
+        String type = "info";
+        if (properties != null) {
+            for (String prop : properties) {
+                if (profile.getFloatProperties().contains(prop)) {
+                    type = "statistic";
+                    break;
+                }
+            }
+        }
+        Map<String, Object> body = new HashMap<>();
+        body.put("messageId", messageId);
+        body.put("type", type);
+        byte[] payload = JsonWriters.toDevicePayload(body, Set.of());
+        return new EncodedDownstream(payload);
     }
 
     private EncodedDownstream encodeTemplate(

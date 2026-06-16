@@ -17,6 +17,7 @@
 
     <modules>
         <module>gemeopen-protocol-core</module>
+        <module>gemeopen-protocol-profiles</module>
         <module>gemeopen-protocol-jetlinks</module>
     </modules>
 

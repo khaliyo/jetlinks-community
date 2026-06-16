@@ -17,6 +17,7 @@ public class ProductProfile {
     private Map<String, String> propertyMapping = Collections.emptyMap();
     private List<String> enumProperties = Collections.emptyList();
     private List<String> intProperties = Collections.emptyList();
+    private List<String> floatProperties = Collections.emptyList();
     private CommandResponseRules commandResponse = new CommandResponseRules();
     private Map<String, EventRule> events = Collections.emptyMap();
     private Map<String, FunctionRule> functions = Collections.emptyMap();
@@ -84,6 +85,14 @@ public class ProductProfile {
 
     public void setIntProperties(List<String> intProperties) {
         this.intProperties = intProperties != null ? intProperties : Collections.emptyList();
+    }
+
+    public List<String> getFloatProperties() {
+        return floatProperties;
+    }
+
+    public void setFloatProperties(List<String> floatProperties) {
+        this.floatProperties = floatProperties != null ? floatProperties : Collections.emptyList();
     }
 
     public CommandResponseRules getCommandResponse() {

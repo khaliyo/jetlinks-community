@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public final class ProfileLoader {
 
@@ -14,6 +16,12 @@ public final class ProfileLoader {
 
     public static ProductProfile load(InputStream in) throws IOException {
         return MAPPER.readValue(in, ProductProfile.class);
+    }
+
+    public static ProductProfile loadPath(Path path) throws IOException {
+        try (InputStream in = Files.newInputStream(path)) {
+            return load(in);
+        }
     }
 
     public static ProductProfile loadClasspath(ClassLoader loader, String productId) throws IOException {

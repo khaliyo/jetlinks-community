@@ -12,16 +12,16 @@ import java.util.Set;
 /** 上行 JSON → 平台语义片段，行为对齐 specs/gspm1b/transparent-codec.js */
 public class UpstreamDecoder {
 
-    private static final Set<String> FLOAT_SOURCES = Set.of("current", "energy", "power", "voltage");
-
     private final ProductProfile profile;
     private final Set<String> enumProps;
     private final Set<String> intProps;
+    private final Set<String> floatProps;
 
     public UpstreamDecoder(ProductProfile profile) {
         this.profile = profile;
         this.enumProps = new HashSet<>(profile.getEnumProperties());
         this.intProps = new HashSet<>(profile.getIntProperties());
+        this.floatProps = new HashSet<>(profile.getFloatProperties());
     }
 
     public List<UpstreamPart> decode(Map<String, ?> data, String fallbackDeviceId) {
@@ -83,7 +83,7 @@ public class UpstreamDecoder {
                 putIfPresent(props, dest, toEnumValue(raw));
             } else if (intProps.contains(dest)) {
                 putIfPresent(props, dest, toInt(raw));
-            } else if (FLOAT_SOURCES.contains(src)) {
+            } else if (floatProps.contains(dest)) {
                 putIfPresent(props, dest, toFloat(raw));
             } else {
                 putIfPresent(props, dest, raw);
@@ -96,14 +96,39 @@ public class UpstreamDecoder {
     }
 
     private UpstreamPart.Event buildEvent(Map<String, ?> data) {
-        if (!"controller-event".equals(String.valueOf(data.get("commandName")))) {
-            return null;
+        for (Map.Entry<String, ProductProfile.EventRule> entry : profile.getEvents().entrySet()) {
+            ProductProfile.EventRule rule = entry.getValue();
+            if (!matchesEvent(data, rule)) {
+                continue;
+            }
+            Map<String, Object> eventData = new HashMap<>();
+            for (String field : rule.getPayload()) {
+                Object raw = data.get(field);
+                if (raw == null) {
+                    continue;
+                }
+                String dest = profile.getPropertyMapping().getOrDefault(field, field);
+                if (enumProps.contains(dest)) {
+                    putIfPresent(eventData, dest, toEnumValue(raw));
+                } else if (intProps.contains(dest)) {
+                    putIfPresent(eventData, dest, toInt(raw));
+                } else {
+                    putIfPresent(eventData, dest, raw);
+                }
+            }
+            return new UpstreamPart.Event(entry.getKey(), eventData);
         }
-        Map<String, Object> eventData = new HashMap<>();
-        putIfPresent(eventData, "key", toInt(data.get("key")));
-        putIfPresent(eventData, "onState", toInt(data.get("onState")));
-        putIfPresent(eventData, "mac", data.get("mac"));
-        return new UpstreamPart.Event("controllerEvent", eventData);
+        return null;
+    }
+
+    private boolean matchesEvent(Map<String, ?> data, ProductProfile.EventRule rule) {
+        for (Map.Entry<String, String> entry : rule.getMatch().entrySet()) {
+            Object value = data.get(entry.getKey());
+            if (value == null || !String.valueOf(value).equals(entry.getValue())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isCommandResponse(Map<String, ?> data) {

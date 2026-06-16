@@ -128,9 +128,8 @@ public class ProtocolSupportController
     @Authorize(merge = false)
     @Operation(summary = "获取当前支持的协议")
     public Flux<ProtocolInfo> allProtocols(@Parameter(hidden = true) QueryParamEntity query) {
-        return protocolSupports
-            .getProtocols()
-            .collectMap(ProtocolSupport::getId)
+        return service
+            .loadProtocolsById()
             .flatMapMany(protocols -> service.createQuery()
                 .setParam(query)
                 .fetch()

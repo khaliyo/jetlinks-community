@@ -91,9 +91,7 @@ public class LocalProtocolSupportService extends GenericReactiveCrudService<Prot
 
     public Flux<ProtocolInfo> getSupportTransportProtocols(String transport,
                                                            QueryParamEntity query) {
-        return protocolSupports
-            .getProtocols()
-            .collectMap(ProtocolSupport::getId)
+        return loadProtocolsById()
             .flatMapMany(protocols -> this.createQuery()
                                           .setParam(query)
                                           .fetch()
@@ -103,11 +101,28 @@ public class LocalProtocolSupportService extends GenericReactiveCrudService<Prot
                                               .filterWhen(support -> support
                                                   .getSupportedTransport()
                                                   .filter(t -> t.isSame(transport))
-                                                  .hasElements())
+                                                  .hasElements()
+                                                  .onErrorResume(err -> {
+                                                      log.warn("skip protocol [{}] when listing transport [{}]: {}",
+                                                               support.getId(), transport, err.getMessage());
+                                                      return Mono.just(false);
+                                                  }))
                                               .map(ignore -> ProtocolInfo.of(tp2.getT2()))
                                               .map(protocolInfo -> Tuples.of(tp2.getT1(), protocolInfo))))
             .sort(Comparator.comparingLong(Tuple2::getT1))
             .map(Tuple2::getT2);
+    }
+
+    /**
+     * 合并内存中已加载的协议。同一 ID 可能同时存在于 DB 加载器与 Spring Bean（如 plugin_gateway），
+     * 须去重，否则 {@code collectMap} 会抛 Duplicate key 导致网关创建页「系统内部错误」。
+     */
+    public Mono<java.util.Map<String, ProtocolSupport>> loadProtocolsById() {
+        return protocolSupports
+            .getProtocols()
+            .groupBy(ProtocolSupport::getId)
+            .flatMap(group -> group.take(1))
+            .collectMap(ProtocolSupport::getId);
     }
 
     public Mono<TransportDetail> getTransportDetail(String id, String transport) {

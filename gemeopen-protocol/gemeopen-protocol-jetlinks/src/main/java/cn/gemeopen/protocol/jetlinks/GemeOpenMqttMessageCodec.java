@@ -26,6 +26,7 @@ import org.jetlinks.core.message.event.EventMessage;
 import org.jetlinks.core.message.function.FunctionInvokeMessage;
 import org.jetlinks.core.message.function.FunctionInvokeMessageReply;
 import org.jetlinks.core.message.function.FunctionParameter;
+import org.jetlinks.core.message.property.ReadPropertyMessage;
 import org.jetlinks.core.message.property.ReportPropertyMessage;
 import org.jetlinks.core.message.property.WritePropertyMessage;
 import org.reactivestreams.Publisher;
@@ -176,6 +177,8 @@ public class GemeOpenMqttMessageCodec implements DeviceMessageCodec {
             }
             Map.Entry<String, Object> entry = props.entrySet().iterator().next();
             payload = encoder.encodeWriteProperty(entry.getKey(), entry.getValue(), messageId).payload();
+        } else if (message instanceof ReadPropertyMessage read) {
+            payload = encoder.encodeReadProperty(read.getProperties(), messageId).payload();
         } else {
             return java.util.Optional.empty();
         }
