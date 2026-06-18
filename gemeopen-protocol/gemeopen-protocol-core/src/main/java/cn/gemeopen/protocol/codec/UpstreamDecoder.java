@@ -14,12 +14,14 @@ public class UpstreamDecoder {
 
     private final ProductProfile profile;
     private final Set<String> enumProps;
+    private final Set<String> stringEnumProps;
     private final Set<String> intProps;
     private final Set<String> floatProps;
 
     public UpstreamDecoder(ProductProfile profile) {
         this.profile = profile;
         this.enumProps = new HashSet<>(profile.getEnumProperties());
+        this.stringEnumProps = new HashSet<>(profile.getStringEnumProperties());
         this.intProps = new HashSet<>(profile.getIntProperties());
         this.floatProps = new HashSet<>(profile.getFloatProperties());
     }
@@ -75,11 +77,13 @@ public class UpstreamDecoder {
         for (Map.Entry<String, String> e : profile.getPropertyMapping().entrySet()) {
             String src = e.getKey();
             String dest = e.getValue();
-            Object raw = data.get(src);
+            Object raw = getField(data, src);
             if (raw == null || String.valueOf(raw).isEmpty()) {
                 continue;
             }
-            if (enumProps.contains(dest)) {
+            if (stringEnumProps.contains(dest)) {
+                putIfPresent(props, dest, raw);
+            } else if (enumProps.contains(dest)) {
                 putIfPresent(props, dest, toEnumValue(raw));
             } else if (intProps.contains(dest)) {
                 putIfPresent(props, dest, toInt(raw));
@@ -108,7 +112,9 @@ public class UpstreamDecoder {
                     continue;
                 }
                 String dest = profile.getPropertyMapping().getOrDefault(field, field);
-                if (enumProps.contains(dest)) {
+                if (stringEnumProps.contains(dest)) {
+                    putIfPresent(eventData, dest, raw);
+                } else if (enumProps.contains(dest)) {
                     putIfPresent(eventData, dest, toEnumValue(raw));
                 } else if (intProps.contains(dest)) {
                     putIfPresent(eventData, dest, toInt(raw));
@@ -173,6 +179,26 @@ public class UpstreamDecoder {
         Map<String, Object> props = mapProperties(data);
         Object output = props.isEmpty() ? Boolean.TRUE : props;
         return new UpstreamPart.FunctionReply(messageId, true, output);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    private static Object getField(Map<String, ?> data, String key) {
+        if (data == null || key == null) {
+            return null;
+        }
+        if (data.containsKey(key)) {
+            return data.get(key);
+        }
+        int dot = key.indexOf('.');
+        if (dot <= 0 || dot >= key.length() - 1) {
+            return null;
+        }
+        Object parent = data.get(key.substring(0, dot));
+        if (parent instanceof Map<?, ?> nested) {
+            return getField((Map<String, ?>) nested, key.substring(dot + 1));
+        }
+        return null;
     }
 
     private static void putIfPresent(Map<String, Object> target, String key, Object value) {

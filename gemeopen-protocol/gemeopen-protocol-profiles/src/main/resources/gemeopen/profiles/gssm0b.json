@@ -38,9 +38,7 @@
   },
   "enumProperties": [
     "keyLock",
-    "wifiLock",
-    "dhcpEnable",
-    "playerMode"
+    "wifiLock"
   ],
   "intProperties": [
     "fileCount",
@@ -390,5 +388,8 @@
         }
       }
     }
-  }
+  },
+  "stringEnumProperties": [
+    "playerMode"
+  ]
 }

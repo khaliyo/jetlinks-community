@@ -12,7 +12,7 @@ import java.util.Set;
 public class DownstreamEncoder {
 
     private static final Set<String> INT_KEYS = Set.of(
-        "key", "key1", "key2", "timerEnable", "timerInterval", "keyLock", "onState", "onState1", "onState2", "wifiLock"
+        "key", "key1", "key2", "no", "number", "hour", "minute", "port", "countdownSecond", "timerEnable", "timerInterval", "keyLock", "onState", "onState1", "onState2", "wifiLock", "value"
     );
 
     private final ProductProfile profile;
@@ -52,9 +52,7 @@ public class DownstreamEncoder {
             }
         }
         Map<String, Object> body = new HashMap<>();
-        if (!body.containsKey("messageId")) {
-            body.put("messageId", messageId);
-        }
+        body.put("messageId", messageId);
         body.put("type", type);
         byte[] payload = JsonWriters.toDevicePayload(body, Set.of());
         return new EncodedDownstream(payload);

@@ -17,7 +17,9 @@ JetLinks 产品 ID 与 Profile 文件名一致，例如 `gspm1b.json`。
   },
   "propertyMapping": {},
   "enumProperties": [],
+  "stringEnumProperties": [],
   "intProperties": [],
+  "floatProperties": [],
   "events": {},
   "commandResponse": {},
   "functions": {},
@@ -50,14 +52,20 @@ JetLinks 产品 ID 与 Profile 文件名一致，例如 `gspm1b.json`。
 }
 ```
 
-### `enumProperties` / `intProperties`
+### `enumProperties` / `stringEnumProperties` / `intProperties` / `floatProperties`
 
 上报类型规范化（避免 `1.0`、enum 不匹配）：
 
 ```json
 "enumProperties": ["switchState", "onState", "keyLock", "wifiLock", "timerEnable"],
-"intProperties": ["signal", "timerInterval"]
+"stringEnumProperties": ["playerMode"],
+"intProperties": ["signal", "timerInterval"],
+"floatProperties": ["current", "power", "voltage", "energy"]
 ```
+
+- `enumProperties`：设备上报为 **整型** 的枚举，解码为字符串 `"0"` / `"1"` 等（对齐 JetLinks enum 物模型）。
+- `stringEnumProperties`：设备上报为 **字符串** 的枚举（如 `playerMode=OnePlay`），原样透传，不做 `Integer.parseInt`。
+- 同一属性不要同时出现在 `enumProperties` 与 `intProperties` 中。
 
 ### `commandResponse`
 
@@ -89,7 +97,7 @@ JetLinks 产品 ID 与 Profile 文件名一致，例如 `gspm1b.json`。
 
 ### `functions`
 
-物模型功能 ID → 下行 JSON。`messageId` 由编码器注入平台雪花 ID。
+物模型功能 ID → 下行 JSON。`messageId` 默认由编码器在模板渲染后注入；Profile 中也可写 `${messageId}` 占位符（与平台 ID 一致）。`fields` 支持 **嵌套对象**（如红外 `data.no`、插座倒计时 `finishCommand`）。
 
 ```json
 "functions": {
@@ -136,3 +144,26 @@ JetLinks 产品 ID 与 Profile 文件名一致，例如 `gspm1b.json`。
 5. MQTT 验证 + 功能 messageId 闭环 + 存储策略。
 
 实现阶段可将 [../gspm1b/transparent-codec.js](../gspm1b/transparent-codec.js) 转为 `profiles/gspm1b.json`，物模型仍用 [../gspm1b/metadata.json](../gspm1b/metadata.json)。
+
+
+### 占位符
+
+| 占位符 | 含义 |
+|--------|------|
+| `${inputs.xxx}` | 功能入参 |
+| `${value}` | 写属性值（`writeProperties`） |
+| `${messageId}` | 平台下发的 messageId（可选；未写时编码器自动追加） |
+
+### `propertyMapping` 点路径
+
+源字段可写 `command.key` 形式：解码时先查顶层键，再按 `.` 进入嵌套 Map（如定时任务 `command.key` → `timerTaskCommandKey`）。
+
+## 已接入 Profile 清单（2026-06）
+
+| productId | 说明 | 物模型 |
+|-----------|------|--------|
+| gspm1b | 单路插座 | `specs/metadata/gspm1b-metadata.json` |
+| gscw1m2p | 双路开关 | `specs/metadata/gscw1m2p-metadata.json` |
+| gspw1b / gspw1b2 | 86 插座 | `specs/metadata/gspw1b*-metadata.json` |
+| gscu1b | 红外控制器 | `specs/metadata/gscu1b-metadata.json` |
+| gssm0b | 音频播放器 | `specs/metadata/gssm0b-metadata.json` |

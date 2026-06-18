@@ -1,7 +1,7 @@
 # GemeOpen 官方协议 JAR 开发方案
 
-> **版本：** 2026-06-02  
-> **状态：** 设计稿（待实施）  
+> **版本：** 2026-06-18  
+> **状态：** 实施中（core + SPI 已落地，多型号 Profile 扩展中）  
 > **首款参考实现：** [GSPM1B](../gspm1b/)（透传 PoC 已验证）  
 > **相关：** [报文共性](./message-envelope.md) · [Profile 结构](./product-profile-schema.md)
 
@@ -97,6 +97,10 @@ jetlinks-community/
     └── gemeopen-protocol-profiles/
         └── resources/gemeopen/profiles/
             ├── gspm1b.json
+            ├── gscw1m2p.json
+            ├── gspw1b2.json
+            ├── gscu1b.json
+            ├── gssm0b.json
             └── _template.json
 ```
 
@@ -237,7 +241,71 @@ gemeopen-protocol (共用 Codec)
 
 ---
 
-## 12. 下一步
+## 12. 多型号兼容性评估（GSPW1B2 / GSCU1B / GSSM0B）
+
+### 12.1 结论
+
+三款新型号与 GSPM1B 共用 **同一套 Codec**（`UpstreamDecoder` + `DownstreamEncoder` + `ProfileRegistry`），差异全部落在 Profile JSON 与物模型 `specs/metadata/*-metadata.json`。经单测 `MultiProductProfilesCodecTest` 覆盖：
+
+| 能力 | GSPW1B2 | GSCU1B | GSSM0B |
+|------|---------|--------|--------|
+| Topic `/{productId}/{deviceId}/up|down` | ✅ | ✅ | ✅ |
+| 扁平 propertyMapping | ✅ | ✅ | ✅ |
+| 点路径 mapping（`command.key`） | ✅ | — | — |
+| 整型 enum 上报 | ✅ | ✅ | ✅ |
+| 字符串 enum（`playerMode`） | — | — | ✅ `stringEnumProperties` |
+| 嵌套下行 fields（`finishCommand` / `data.no`） | ✅ | ✅ | — |
+| `${messageId}` 占位符 | — | ✅ | ✅ |
+| `controllerEvent` | ✅ | — | — |
+
+物模型侧：Profile 中 `functions` / `writeProperties` 的 key 与 metadata 中功能/可写属性 ID **一一对应**（由接入 checklist 人工核对；metadata 位于 `specs/metadata/`）。
+
+### 12.2 历史缺口与已修复项
+
+| 缺口 | 影响 | 修复 |
+|------|------|------|
+| `DownstreamTemplate.fields` 仅 `Map<String,String>` | Jackson 无法加载嵌套 JSON；下行丢结构 | 改为 `Map<String,Object>` + 递归 `resolvePlaceholder` |
+| `JsonWriters` 仅扁平 Map | 嵌套对象被 `toString()` | 递归序列化 Map/List |
+| `enumProperties` 一律 `parseInt` | GSSM0B `playerMode` 上报崩溃 | 新增 `stringEnumProperties` |
+| `propertyMapping` 仅顶层 `get` | GSPW1B2 `command.key` 无法映射 | `getField` 支持 `.` 点路径 |
+| `${messageId}` 未解析 | 下行出现字面量或重复注入 | 占位符解析 + 未出现时自动追加 |
+
+后续新型号若出现 **数组 payload、非 JSON 信封、全新 type** 等，再评估 Profile schema 扩展或 Codec 分支；当前五款均落在「配置即可」范围内。
+
+### 12.3 性能与千台以上接入
+
+**结论：Profile 数量与设备台数不是瓶颈；单条消息的 Profile 查找与映射为 O(1) / O(字段数)。**
+
+```text
+设备消息到达
+  → Topic 解析 productId（O(topic 段数)）
+  → ProfileRegistry.getRequired(productId)  // ConcurrentHashMap，首次加载后 O(1)
+  → JSON parse 上行（O(payload 字节)）
+  → UpstreamDecoder：遍历 propertyMapping 条目（每产品固定 ~30 项，与设备数无关）
+  → 平台 DeviceMessage 流水线 / 存储 / 规则引擎
+```
+
+| 维度 | 行为 | 1000+ 台影响 |
+|------|------|----------------|
+| Profile 缓存 | 按 `productId` 单例缓存，非每设备一份 | 产品型号数 ≤ 10 时内存可忽略 |
+| 外部 Profile 目录 | `GEMEOPEN_PROFILES_PATH` 可选热更新 | 仅部署/运维变更时 `clearCache()` |
+| 编解码 CPU | 每消息一次 JSON + 映射循环 | 与 MQTT 吞吐线性相关，非 N² |
+| 真实瓶颈 | JetLinks 消息总线、DB 时序写入、规则引擎 | 与协议 JAR 无关，按平台容量规划 |
+
+建议：单网关 MQTT Client 产品数 × 上报频率做压测；协议包侧无需为「千台」做特殊优化。
+
+### 12.4 新型号扩展流程（配置优先）
+
+1. 复制 `_template.json` 或最接近的 sibling Profile。  
+2. 对照厂商 JSON 样例填写 `propertyMapping` / `functions` / `commandResponse`。  
+3. 在 `specs/metadata/{productId}-metadata.json` 维护物模型，保证 ID 与 Profile 一致。  
+4. 增加 `MultiProductProfilesCodecTest` 风格 golden case（或扩展现有单测）。  
+5. **无需改 Java** 除非出现 schema 未覆盖的新报文形态。  
+6. 可选：将 Profile 放到外部目录覆盖 classpath，便于热修无需重打 JAR。
+
+---
+
+## 13. 下一步
 
 1. 评审协议 ID 与模块路径。  
 2. 自 `transparent-codec.js` 生成 `profiles/gspm1b.json`。  
