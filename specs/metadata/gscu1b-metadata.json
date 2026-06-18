@@ -1,0 +1,448 @@
+{
+  "id": "gscu1b",
+  "name": "GSCU1B红外控制器",
+  "description": "智鸟科技 GeekOpen GSCU1B 红外学习/发射控制器，MQTT 私有 JSON 协议",
+  "properties": [
+    {
+      "id": "irNo",
+      "name": "红外码编号",
+      "description": "红外码存储编号，范围 1~248",
+      "valueType": {
+        "type": "int",
+        "min": 1,
+        "max": 248
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "irData",
+      "name": "红外码数据",
+      "description": "红外码 HEX 字符串，包含长度头和结尾 FF",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "action",
+      "name": "指令动作",
+      "description": "红外相关动作，如 emit/learn/erase/learnBatch/learnCancel/ir_read/ir_write",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "wifiLock",
+      "name": "配网锁",
+      "description": "0=关闭，1=开启",
+      "valueType": {
+        "type": "enum",
+        "elements": [
+          { "value": "0", "text": "关闭" },
+          { "value": "1", "text": "开启" }
+        ]
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "ip",
+      "name": "IP地址",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "signal",
+      "name": "WiFi信号强度",
+      "description": "WiFi RSSI(dBm)",
+      "valueType": {
+        "type": "int",
+        "unit": "dBm"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "ssid",
+      "name": "WiFi名称",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "version",
+      "name": "固件版本",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "mac",
+      "name": "MAC",
+      "description": "WiFi MAC 或 4G IMEI",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "deviceCode",
+      "name": "设备代号",
+      "description": "设备固定代号，如 Infrared-Controller-WiFi",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "deviceType",
+      "name": "消息类型",
+      "description": "设备上报消息类型字段",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "lastCommandName",
+      "name": "最近指令名",
+      "description": "设备上报的 commandName，便于调试",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "lastSource",
+      "name": "最近消息来源",
+      "description": "auto=定时上报，command=指令响应",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "emitInfraredCode",
+      "name": "发射红外码",
+      "description": "对应 action=emit，发射指定编号的红外码",
+      "async": false,
+      "inputs": [
+        {
+          "id": "no",
+          "name": "红外码编号",
+          "valueType": {
+            "type": "int",
+            "min": 1,
+            "max": 248
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "eraseInfraredCode",
+      "name": "擦除红外码",
+      "description": "对应 action=erase，擦除设备中所有学习过的红外码",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "learnInfraredCode",
+      "name": "学习红外码",
+      "description": "对应 action=learn，学习红外码到指定编号",
+      "async": false,
+      "inputs": [
+        {
+          "id": "no",
+          "name": "红外码编号",
+          "valueType": {
+            "type": "int",
+            "min": 1,
+            "max": 248
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "learnInfraredCodeBatch",
+      "name": "批量写入红外码",
+      "description": "对应 action=learnBatch，从文件批量学习红外码",
+      "async": false,
+      "inputs": [
+        {
+          "id": "file",
+          "name": "红外码文件URL",
+          "valueType": {
+            "type": "string"
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "cancelLearnInfraredCode",
+      "name": "取消学习红外码",
+      "description": "对应 action=learnCancel",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "readInfraredCode",
+      "name": "读取红外码",
+      "description": "对应 action=ir_read，读取指定编号的红外码数据",
+      "async": false,
+      "inputs": [
+        {
+          "id": "no",
+          "name": "红外码编号",
+          "valueType": {
+            "type": "int",
+            "min": 1,
+            "max": 248
+          }
+        }
+      ],
+      "output": {
+        "type": "object",
+        "properties": []
+      }
+    },
+    {
+      "id": "writeInfraredCode",
+      "name": "写入红外码",
+      "description": "对应 action=ir_write，向指定编号写入红外码数据",
+      "async": false,
+      "inputs": [
+        {
+          "id": "no",
+          "name": "红外码编号",
+          "valueType": {
+            "type": "int",
+            "min": 1,
+            "max": 248
+          }
+        },
+        {
+          "id": "ir_data",
+          "name": "红外码数据",
+          "valueType": {
+            "type": "string"
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "reset",
+      "name": "恢复出厂设置",
+      "description": "对应 type=setting, system=reset",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "restart",
+      "name": "设备软重启",
+      "description": "对应 type=setting, system=restart",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "queryInfo",
+      "name": "获取设备信息",
+      "description": "对应 type=info",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "object",
+        "properties": []
+      }
+    },
+    {
+      "id": "setWifiLock",
+      "name": "设置WiFi配网锁",
+      "async": false,
+      "inputs": [
+        {
+          "id": "wifiLock",
+          "name": "配网锁",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "0", "text": "关闭" },
+              { "value": "1", "text": "开启" }
+            ]
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "setCustomMqtt",
+      "name": "自定义MQTT服务器",
+      "description": "对应 type=custom，配置自定义MQTT服务器参数",
+      "async": false,
+      "inputs": [
+        {
+          "id": "clientId",
+          "name": "客户端ID",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "username",
+          "name": "用户名",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "password",
+          "name": "密码",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "server",
+          "name": "服务器地址",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "port",
+          "name": "端口",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "subcribe",
+          "name": "订阅主题",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "publish",
+          "name": "发布主题",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "protocol",
+          "name": "协议类型",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "mqtt", "text": "MQTT" }
+            ]
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "setCustomTcp",
+      "name": "自定义TCP服务器",
+      "description": "对应 type=custom，配置自定义TCP服务器参数",
+      "async": false,
+      "inputs": [
+        {
+          "id": "server",
+          "name": "服务器地址",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "port",
+          "name": "端口",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "protocol",
+          "name": "协议类型",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "tcp", "text": "TCP" }
+            ]
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    }
+  ],
+  "events": []
+}

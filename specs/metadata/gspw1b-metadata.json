@@ -1,0 +1,548 @@
+{
+  "id": "gspw1b",
+  "name": "GSPW1B智能86插座",
+  "description": "智鸟科技 GeekOpen GSPW1B，MQTT 私有 JSON 协议",
+  "properties": [
+    {
+      "id": "switchState",
+      "name": "开关状态",
+      "description": "继电器通断：0=关(断电)，1=开(通电)。对应设备字段 key",
+      "valueType": {
+        "type": "enum",
+        "elements": [
+          { "value": "0", "text": "关" },
+          { "value": "1", "text": "开" }
+        ]
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "current",
+      "name": "电流",
+      "description": "实时电流(A)",
+      "valueType": {
+        "type": "float",
+        "unit": "ampere",
+        "scale": 3
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "power",
+      "name": "功率",
+      "description": "实时功率(W)",
+      "valueType": {
+        "type": "float",
+        "unit": "watt",
+        "scale": 3
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "voltage",
+      "name": "电压",
+      "description": "实时电压(V)",
+      "valueType": {
+        "type": "float",
+        "unit": "volt",
+        "scale": 2
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "energy",
+      "name": "累计电量",
+      "description": "累计电量(kWh)",
+      "valueType": {
+        "type": "float",
+        "unit": "kWh",
+        "scale": 3
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "signal",
+      "name": "WiFi信号强度",
+      "description": "WiFi RSSI(dBm)",
+      "valueType": {
+        "type": "int",
+        "unit": "dBm"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "onState",
+      "name": "上电默认状态",
+      "description": "0=记忆，1=默认关，2=默认开",
+      "valueType": {
+        "type": "enum",
+        "elements": [
+          { "value": "0", "text": "记忆" },
+          { "value": "1", "text": "默认关" },
+          { "value": "2", "text": "默认开" }
+        ]
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "keyLock",
+      "name": "按键锁",
+      "description": "0=关闭，1=开启",
+      "valueType": {
+        "type": "enum",
+        "elements": [
+          { "value": "0", "text": "关闭" },
+          { "value": "1", "text": "开启" }
+        ]
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "wifiLock",
+      "name": "配网锁",
+      "description": "0=关闭，1=开启",
+      "valueType": {
+        "type": "enum",
+        "elements": [
+          { "value": "0", "text": "关闭" },
+          { "value": "1", "text": "开启" }
+        ]
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "timerEnable",
+      "name": "定时上报开关",
+      "description": "0=关闭，1=开启",
+      "valueType": {
+        "type": "enum",
+        "elements": [
+          { "value": "0", "text": "关闭" },
+          { "value": "1", "text": "开启" }
+        ]
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "timerInterval",
+      "name": "上报间隔",
+      "description": "电量定时上报间隔(秒)，范围 5-86400",
+      "valueType": {
+        "type": "int",
+        "unit": "seconds",
+        "min": 5,
+        "max": 86400
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "deviceType",
+      "name": "设备型号",
+      "description": "如 Socket-86",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "version",
+      "name": "固件版本",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "ip",
+      "name": "IP地址",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "ssid",
+      "name": "WiFi名称",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "lastCommandName",
+      "name": "最近指令名",
+      "description": "设备上报的 commandName，便于调试",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "lastSource",
+      "name": "最近消息来源",
+      "description": "auto=定时上报，command=指令响应",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "powerControl",
+      "name": "通断电控制",
+      "description": "控制继电器开关，对应 type=event, key=0/1",
+      "async": false,
+      "inputs": [
+        {
+          "id": "key",
+          "name": "开关",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "0", "text": "关" },
+              { "value": "1", "text": "开" }
+            ]
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "restart",
+      "name": "设备软重启",
+      "description": "对应 type=setting, system=restart",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "reset",
+      "name": "恢复出厂设置",
+      "description": "对应 type=setting, system=reset",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "queryInfo",
+      "name": "获取设备信息",
+      "description": "对应 type=info",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "object",
+        "properties": []
+      }
+    },
+    {
+      "id": "queryStatistic",
+      "name": "获取统计信息",
+      "description": "对应 type=statistic，返回 current/power/voltage/energy",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "object",
+        "properties": []
+      }
+    },
+    {
+      "id": "queryProtocol",
+      "name": "获取设备通讯协议信息",
+      "description": "对应 type=protocol，返回 mqtt/tcp 服务器配置",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "object",
+        "properties": []
+      }
+    },
+    {
+      "id": "setTimerReport",
+      "name": "设置定时上报",
+      "description": "对应 type=setting, timerEnable + timerInterval",
+      "async": false,
+      "inputs": [
+        {
+          "id": "timerEnable",
+          "name": "是否开启",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "0", "text": "关闭" },
+              { "value": "1", "text": "开启" }
+            ]
+          }
+        },
+        {
+          "id": "timerInterval",
+          "name": "间隔(秒)",
+          "valueType": {
+            "type": "int",
+            "min": 5,
+            "max": 86400
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "setKeyLock",
+      "name": "设置按键锁",
+      "async": false,
+      "inputs": [
+        {
+          "id": "keyLock",
+          "name": "按键锁",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "0", "text": "关闭" },
+              { "value": "1", "text": "开启" }
+            ]
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "setOnState",
+      "name": "设置上电默认状态",
+      "async": false,
+      "inputs": [
+        {
+          "id": "onState",
+          "name": "上电状态",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "0", "text": "记忆" },
+              { "value": "1", "text": "默认关" },
+              { "value": "2", "text": "默认开" }
+            ]
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "setWifiLock",
+      "name": "设置WiFi配网锁",
+      "async": false,
+      "inputs": [
+        {
+          "id": "wifiLock",
+          "name": "配网锁",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "0", "text": "关闭" },
+              { "value": "1", "text": "开启" }
+            ]
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "setCustomMqtt",
+      "name": "自定义MQTT服务器",
+      "description": "对应 type=custom，配置自定义MQTT服务器参数",
+      "async": false,
+      "inputs": [
+        {
+          "id": "clientId",
+          "name": "客户端ID",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "username",
+          "name": "用户名",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "password",
+          "name": "密码",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "server",
+          "name": "服务器地址",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "port",
+          "name": "端口",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "subcribe",
+          "name": "订阅主题",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "publish",
+          "name": "发布主题",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "protocol",
+          "name": "协议类型",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "mqtt", "text": "MQTT" }
+            ]
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "setCustomTcp",
+      "name": "自定义TCP服务器",
+      "description": "对应 type=custom，配置自定义TCP服务器参数",
+      "async": false,
+      "inputs": [
+        {
+          "id": "server",
+          "name": "服务器地址",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "port",
+          "name": "端口",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "protocol",
+          "name": "协议类型",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "tcp", "text": "TCP" }
+            ]
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "controllerEvent",
+      "name": "本地按键事件",
+      "description": "commandName=controller-event，本地按键触发通断",
+      "valueType": {
+        "type": "object",
+        "properties": [
+          {
+            "id": "key",
+            "name": "开关状态",
+            "valueType": { "type": "int" }
+          },
+          {
+            "id": "onState",
+            "name": "上电默认状态",
+            "valueType": { "type": "int" }
+          },
+          {
+            "id": "mac",
+            "name": "MAC",
+            "valueType": { "type": "string" }
+          }
+        ]
+      },
+      "expands": {
+        "level": "ordinary",
+        "eventType": "reportEvent"
+      }
+    }
+  ]
+}

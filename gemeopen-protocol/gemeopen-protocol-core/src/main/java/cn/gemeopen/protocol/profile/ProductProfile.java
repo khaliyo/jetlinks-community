@@ -16,6 +16,7 @@ public class ProductProfile {
     private TopicTemplate topic = new TopicTemplate();
     private Map<String, String> propertyMapping = Collections.emptyMap();
     private List<String> enumProperties = Collections.emptyList();
+    private List<String> stringEnumProperties = Collections.emptyList();
     private List<String> intProperties = Collections.emptyList();
     private List<String> floatProperties = Collections.emptyList();
     private CommandResponseRules commandResponse = new CommandResponseRules();
@@ -77,6 +78,14 @@ public class ProductProfile {
 
     public void setEnumProperties(List<String> enumProperties) {
         this.enumProperties = enumProperties != null ? enumProperties : Collections.emptyList();
+    }
+
+    public List<String> getStringEnumProperties() {
+        return stringEnumProperties;
+    }
+
+    public void setStringEnumProperties(List<String> stringEnumProperties) {
+        this.stringEnumProperties = stringEnumProperties != null ? stringEnumProperties : Collections.emptyList();
     }
 
     public List<String> getIntProperties() {
@@ -267,7 +276,7 @@ public class ProductProfile {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class DownstreamTemplate {
         private String type;
-        private Map<String, String> fields = Collections.emptyMap();
+        private Map<String, Object> fields = Collections.emptyMap();
 
         public String getType() {
             return type;
@@ -277,11 +286,11 @@ public class ProductProfile {
             this.type = type;
         }
 
-        public Map<String, String> getFields() {
+        public Map<String, Object> getFields() {
             return fields;
         }
 
-        public void setFields(Map<String, String> fields) {
+        public void setFields(Map<String, Object> fields) {
             this.fields = fields != null ? fields : Collections.emptyMap();
         }
     }

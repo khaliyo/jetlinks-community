@@ -1,0 +1,197 @@
+{
+  "profileVersion": "1",
+  "productId": "gscu1b",
+  "name": "GSCU1B红外控制器",
+  "deviceModelHint": "Infrared-Controller-WiFi",
+  "topic": {
+    "upstream": "/{productId}/{deviceId}/up",
+    "downstream": "/{productId}/{deviceId}/down"
+  },
+  "propertyMapping": {
+    "action": "action",
+    "no": "irNo",
+    "ir_data": "irData",
+    "code": "deviceCode",
+    "ip": "ip",
+    "signal": "signal",
+    "ssid": "ssid",
+    "version": "version",
+    "mac": "mac",
+    "wifiLock": "wifiLock",
+    "type": "deviceType",
+    "commandName": "lastCommandName",
+    "source": "lastSource"
+  },
+  "enumProperties": [
+    "wifiLock"
+  ],
+  "intProperties": [
+    "irNo",
+    "signal"
+  ],
+  "commandResponse": {
+    "rules": [
+      {
+        "source": "command"
+      },
+      {
+        "commandNameIn": [
+          "info-all"
+        ],
+        "sourceNot": "auto",
+        "requireMessageId": true
+      }
+    ]
+  },
+  "events": {},
+  "functions": {
+    "emitInfraredCode": {
+      "downstream": {
+        "type": "infrared",
+        "fields": {
+          "action": "emit",
+          "data": {
+            "no": "${inputs.no}"
+          },
+          "type": "infrared"
+        }
+      }
+    },
+    "eraseInfraredCode": {
+      "downstream": {
+        "type": "infrared",
+        "fields": {
+          "action": "erase",
+          "type": "infrared"
+        }
+      }
+    },
+    "learnInfraredCode": {
+      "downstream": {
+        "type": "infrared",
+        "fields": {
+          "action": "learn",
+          "data": {
+            "no": "${inputs.no}"
+          },
+          "type": "infrared"
+        }
+      }
+    },
+    "learnInfraredCodeBatch": {
+      "downstream": {
+        "type": "infrared",
+        "fields": {
+          "action": "learnBatch",
+          "data": {
+            "file": "${inputs.file}"
+          },
+          "type": "infrared"
+        }
+      }
+    },
+    "cancelLearnInfraredCode": {
+      "downstream": {
+        "type": "infrared",
+        "fields": {
+          "action": "learnCancel",
+          "type": "infrared"
+        }
+      }
+    },
+    "readInfraredCode": {
+      "downstream": {
+        "type": "infrared",
+        "fields": {
+          "action": "ir_read",
+          "data": {
+            "no": "${inputs.no}"
+          },
+          "messageId": "${messageId}",
+          "type": "infrared"
+        }
+      }
+    },
+    "writeInfraredCode": {
+      "downstream": {
+        "type": "infrared",
+        "fields": {
+          "action": "ir_write",
+          "ir_data": "${inputs.ir_data}",
+          "messageId": "${messageId}",
+          "no": "${inputs.no}",
+          "type": "infrared"
+        }
+      }
+    },
+    "reset": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "system": "reset"
+        }
+      }
+    },
+    "restart": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "system": "restart"
+        }
+      }
+    },
+    "queryInfo": {
+      "downstream": {
+        "type": "info",
+        "fields": {}
+      }
+    },
+    "setWifiLock": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "keyLock": "${inputs.wifiLock}",
+          "type": "setting"
+        }
+      }
+    },
+    "setCustomMqtt": {
+      "downstream": {
+        "type": "custom",
+        "fields": {
+          "clientId": "${inputs.clientId}",
+          "password": "${inputs.password}",
+          "port": "${inputs.port}",
+          "protocol": "${inputs.protocol}",
+          "publish": "${inputs.publish}",
+          "server": "${inputs.server}",
+          "subcribe": "${inputs.subcribe}",
+          "type": "custom",
+          "username": "${inputs.username}"
+        }
+      }
+    },
+    "setCustomTcp": {
+      "downstream": {
+        "type": "custom",
+        "fields": {
+          "port": "${inputs.port}",
+          "protocol": "${inputs.protocol}",
+          "server": "${inputs.server}",
+          "type": "custom"
+        }
+      }
+    }
+  },
+  "writeProperties": {
+    "wifiLock": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "keyLock": "${value}",
+          "type": "setting"
+        }
+      }
+    }
+  }
+}

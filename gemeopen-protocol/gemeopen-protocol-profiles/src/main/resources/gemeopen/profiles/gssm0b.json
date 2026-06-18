@@ -1,0 +1,394 @@
+{
+  "profileVersion": "1",
+  "productId": "gssm0b",
+  "name": "GSSM0B音频播放器",
+  "deviceModelHint": "GSSM0B",
+  "topic": {
+    "upstream": "/{productId}/{deviceId}/up",
+    "downstream": "/{productId}/{deviceId}/down"
+  },
+  "propertyMapping": {
+    "action": "action",
+    "eq-value": "eqValue",
+    "fileCount": "fileCount",
+    "player-mode": "playerMode",
+    "sdCardFreeSpace": "sdCardFreeSpace",
+    "sdCardTotalSpace": "sdCardTotalSpace",
+    "sdCardUsage": "sdCardUsage",
+    "songs": "songs",
+    "vol": "vol",
+    "keyLock": "keyLock",
+    "wifiLock": "wifiLock",
+    "ip": "ip",
+    "signal": "signal",
+    "ssid": "ssid",
+    "version": "version",
+    "mac": "mac",
+    "connMethod": "connMethod",
+    "dhcpEnable": "dhcpEnable",
+    "type": "deviceType",
+    "commandName": "lastCommandName",
+    "source": "lastSource",
+    "voice": "voice",
+    "text": "text",
+    "name": "audioName",
+    "url": "audioUrl",
+    "filepath": "filePath",
+    "value": "vol"
+  },
+  "enumProperties": [
+    "keyLock",
+    "wifiLock",
+    "dhcpEnable",
+    "playerMode"
+  ],
+  "intProperties": [
+    "fileCount",
+    "sdCardFreeSpace",
+    "sdCardTotalSpace",
+    "sdCardUsage",
+    "vol",
+    "signal",
+    "dhcpEnable"
+  ],
+  "commandResponse": {
+    "rules": [
+      {
+        "source": "command"
+      },
+      {
+        "commandNameIn": [
+          "info-all",
+          "info-protocol"
+        ],
+        "sourceNot": "auto",
+        "requireMessageId": true
+      }
+    ]
+  },
+  "events": {},
+  "functions": {
+    "setEq": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-set-eq",
+          "eq-value": "${inputs.eqValue}",
+          "messageId": "${messageId}",
+          "type": "event"
+        }
+      }
+    },
+    "reset": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "messageId": "${messageId}",
+          "system": "reset",
+          "type": "setting"
+        }
+      }
+    },
+    "restart": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "messageId": "${messageId}",
+          "system": "restart",
+          "type": "setting"
+        }
+      }
+    },
+    "queryInfo": {
+      "downstream": {
+        "type": "info",
+        "fields": {
+          "messageId": "${messageId}",
+          "type": "info"
+        }
+      }
+    },
+    "queryProtocol": {
+      "downstream": {
+        "type": "protocol",
+        "fields": {
+          "messageId": "${messageId}",
+          "type": "protocol"
+        }
+      }
+    },
+    "addVolume": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-add-vol",
+          "messageId": "${messageId}",
+          "type": "event"
+        }
+      }
+    },
+    "deleteSong": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-delete",
+          "messageId": "${messageId}",
+          "name": "${inputs.name}",
+          "type": "event"
+        }
+      }
+    },
+    "downloadSong": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "download",
+          "filepath": "${inputs.filepath}",
+          "messageId": "${messageId}",
+          "type": "event",
+          "url": "${inputs.url}"
+        }
+      }
+    },
+    "httpPlay": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-http-play",
+          "messageId": "${messageId}",
+          "type": "event",
+          "url": "${inputs.url}"
+        }
+      }
+    },
+    "httpPlayAndSave": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-http-play-save",
+          "messageId": "${messageId}",
+          "name": "${inputs.name}",
+          "type": "event",
+          "url": "${inputs.url}"
+        }
+      }
+    },
+    "queryPlayerInfo": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-info",
+          "messageId": "${messageId}",
+          "type": "event"
+        }
+      }
+    },
+    "nextSong": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-next",
+          "messageId": "${messageId}",
+          "type": "event"
+        }
+      }
+    },
+    "pause": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-pause",
+          "messageId": "${messageId}",
+          "type": "event"
+        }
+      }
+    },
+    "play": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-play",
+          "messageId": "${messageId}",
+          "type": "event"
+        }
+      }
+    },
+    "prevSong": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-prev",
+          "messageId": "${messageId}",
+          "type": "event"
+        }
+      }
+    },
+    "sdPlay": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-sd-play",
+          "messageId": "${messageId}",
+          "name": "${inputs.name}",
+          "type": "event"
+        }
+      }
+    },
+    "setMode": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-set-mode",
+          "messageId": "${messageId}",
+          "player-mode": "${inputs.playerMode}",
+          "type": "event"
+        }
+      }
+    },
+    "setVolume": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-set-vol",
+          "messageId": "${messageId}",
+          "type": "event",
+          "value": "${inputs.value}"
+        }
+      }
+    },
+    "stop": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-stop",
+          "messageId": "${messageId}",
+          "type": "event"
+        }
+      }
+    },
+    "subVolume": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-sub-vol",
+          "messageId": "${messageId}",
+          "type": "event"
+        }
+      }
+    },
+    "setWifiLock": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "messageId": "${messageId}",
+          "type": "setting",
+          "wifiLock": "${inputs.wifiLock}"
+        }
+      }
+    },
+    "setCustomMqtt": {
+      "downstream": {
+        "type": "custom",
+        "fields": {
+          "clientId": "${inputs.clientId}",
+          "password": "${inputs.password}",
+          "port": "${inputs.port}",
+          "protocol": "${inputs.protocol}",
+          "publish": "${inputs.publish}",
+          "server": "${inputs.server}",
+          "subcribe": "${inputs.subcribe}",
+          "type": "custom",
+          "username": "${inputs.username}"
+        }
+      }
+    },
+    "setCustomTcp": {
+      "downstream": {
+        "type": "custom",
+        "fields": {
+          "port": "${inputs.port}",
+          "protocol": "${inputs.protocol}",
+          "server": "${inputs.server}",
+          "type": "custom"
+        }
+      }
+    },
+    "ttsPlay": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "tts-play",
+          "messageId": "${messageId}",
+          "text": "${inputs.text}",
+          "type": "event",
+          "voice": "${inputs.voice}"
+        }
+      }
+    }
+  },
+  "writeProperties": {
+    "eqValue": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-set-eq",
+          "eq-value": "${value}",
+          "messageId": "${messageId}",
+          "type": "event"
+        }
+      }
+    },
+    "playerMode": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-set-mode",
+          "messageId": "${messageId}",
+          "player-mode": "${value}",
+          "type": "event"
+        }
+      }
+    },
+    "vol": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "action": "player-set-vol",
+          "messageId": "${messageId}",
+          "type": "event",
+          "value": "${value}"
+        }
+      }
+    },
+    "keyLock": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "keyLock": "${value}",
+          "messageId": "${messageId}",
+          "type": "setting"
+        }
+      }
+    },
+    "wifiLock": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "messageId": "${messageId}",
+          "type": "setting",
+          "wifiLock": "${value}"
+        }
+      }
+    },
+    "dhcpEnable": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "dhcpEnable": "${value}",
+          "messageId": "${messageId}",
+          "type": "setting"
+        }
+      }
+    }
+  }
+}

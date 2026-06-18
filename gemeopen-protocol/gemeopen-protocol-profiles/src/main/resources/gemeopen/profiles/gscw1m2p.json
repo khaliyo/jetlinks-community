@@ -27,7 +27,9 @@
     "ip": "ip",
     "ssid": "ssid",
     "mac": "mac",
-    "type": "deviceType"
+    "type": "deviceType",
+    "commandName": "lastCommandName",
+    "source": "lastSource"
   },
   "enumProperties": [
     "switchState1",
@@ -78,6 +80,22 @@
     ]
   },
   "functions": {
+    "powerControl1": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "key1": "${inputs.key1}"
+        }
+      }
+    },
+    "powerControl2": {
+      "downstream": {
+        "type": "event",
+        "fields": {
+          "key2": "${inputs.key2}"
+        }
+      }
+    },
     "restart": {
       "downstream": {
         "type": "setting",
@@ -98,7 +116,7 @@
       "downstream": {
         "type": "setting",
         "fields": {
-          "system": "clear"
+          "system": "energy-clear"
         }
       }
     },
@@ -112,6 +130,39 @@
       "downstream": {
         "type": "statistic",
         "fields": {}
+      }
+    },
+    "queryProtocol": {
+      "downstream": {
+        "type": "protocol",
+        "fields": {}
+      }
+    },
+    "setCustomMqtt": {
+      "downstream": {
+        "type": "custom",
+        "fields": {
+          "clientId": "${inputs.clientId}",
+          "password": "${inputs.password}",
+          "port": "${inputs.port}",
+          "protocol": "${inputs.protocol}",
+          "publish": "${inputs.publish}",
+          "server": "${inputs.server}",
+          "subcribe": "${inputs.subcribe}",
+          "type": "custom",
+          "username": "${inputs.username}"
+        }
+      }
+    },
+    "setCustomTcp": {
+      "downstream": {
+        "type": "custom",
+        "fields": {
+          "port": "${inputs.port}",
+          "protocol": "${inputs.protocol}",
+          "server": "${inputs.server}",
+          "type": "custom"
+        }
       }
     },
     "setTimerReport": {

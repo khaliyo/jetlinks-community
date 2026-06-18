@@ -1,8 +1,8 @@
 {
   "profileVersion": "1",
-  "productId": "gspm1b",
-  "name": "GSPM1B智能插座",
-  "deviceModelHint": "GSPM1B",
+  "productId": "gspw1b2",
+  "name": "GSPW1B2智能86插座",
+  "deviceModelHint": "Socket-86-10A-new",
   "topic": {
     "upstream": "/{productId}/{deviceId}/up",
     "downstream": "/{productId}/{deviceId}/down"
@@ -19,6 +19,15 @@
     "wifiLock": "wifiLock",
     "timerEnable": "timerEnable",
     "timerInterval": "timerInterval",
+    "countdownSecond": "countdownSecond",
+    "remainingSecond": "remainingSecond",
+    "state": "countdownState",
+    "finishCommand": "finishCommand",
+    "number": "timerTaskNumber",
+    "hour": "timerTaskHour",
+    "minute": "timerTaskMinute",
+    "repeat": "timerTaskRepeat",
+    "command.key": "timerTaskCommandKey",
     "version": "version",
     "ip": "ip",
     "ssid": "ssid",
@@ -32,11 +41,25 @@
     "onState",
     "keyLock",
     "wifiLock",
-    "timerEnable"
+    "timerEnable",
+    "countdownState",
+    
+    "timerTaskCommandKey"
   ],
   "intProperties": [
     "signal",
-    "timerInterval"
+    "timerInterval",
+    "countdownSecond",
+    "remainingSecond",
+    "timerTaskNumber",
+    "timerTaskHour",
+    "timerTaskMinute"
+  ],
+  "floatProperties": [
+    "current",
+    "power",
+    "voltage",
+    "energy"
   ],
   "commandResponse": {
     "rules": [
@@ -46,7 +69,8 @@
       {
         "commandNameIn": [
           "info-all",
-          "info-statistic"
+          "info-statistic",
+          "setting-timer-countdown-active"
         ],
         "sourceNot": "auto",
         "requireMessageId": true
@@ -82,6 +106,22 @@
         }
       }
     },
+    "reset": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "system": "reset"
+        }
+      }
+    },
+    "energyClear": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "system": "energy-clear"
+        }
+      }
+    },
     "queryInfo": {
       "downstream": {
         "type": "info",
@@ -91,6 +131,18 @@
     "queryStatistic": {
       "downstream": {
         "type": "statistic",
+        "fields": {}
+      }
+    },
+    "queryProtocol": {
+      "downstream": {
+        "type": "protocol",
+        "fields": {}
+      }
+    },
+    "queryCountdownActive": {
+      "downstream": {
+        "type": "setting",
         "fields": {}
       }
     },
@@ -127,18 +179,51 @@
         }
       }
     },
-    "reset": {
+    "setCountdown": {
       "downstream": {
         "type": "setting",
         "fields": {
-          "system": "reset"
+          "task": "countdown",
+          "countdownSecond": "${inputs.countdownSecond}",
+          "finishCommand": {
+            "key": "${inputs.finishCommandKey}",
+            "type": "event"
+          },
+          "timerInterval": "${inputs.timerInterval}"
         }
       }
     },
-    "queryProtocol": {
+    "clearCountdown": {
       "downstream": {
-        "type": "protocol",
-        "fields": {}
+        "type": "setting",
+        "fields": {
+          "task": "countdown-clear"
+        }
+      }
+    },
+    "setTimerTask": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "task": "timer",
+          "number": "${inputs.number}",
+          "hour": "${inputs.hour}",
+          "minute": "${inputs.minute}",
+          "repeat": "${inputs.repeat}",
+          "command": {
+            "key": "${inputs.commandKey}",
+            "type": "event"
+          }
+        }
+      }
+    },
+    "deleteTimerTask": {
+      "downstream": {
+        "type": "setting",
+        "fields": {
+          "action": "delete",
+          "number": "${inputs.number}"
+        }
       }
     },
     "setCustomMqtt": {
@@ -218,11 +303,5 @@
         }
       }
     }
-  },
-  "floatProperties": [
-    "current",
-    "power",
-    "voltage",
-    "energy"
-  ]
+  }
 }

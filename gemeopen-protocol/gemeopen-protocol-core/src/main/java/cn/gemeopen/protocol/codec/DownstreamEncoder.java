@@ -52,7 +52,9 @@ public class DownstreamEncoder {
             }
         }
         Map<String, Object> body = new HashMap<>();
-        body.put("messageId", messageId);
+        if (!body.containsKey("messageId")) {
+            body.put("messageId", messageId);
+        }
         body.put("type", type);
         byte[] payload = JsonWriters.toDevicePayload(body, Set.of());
         return new EncodedDownstream(payload);
@@ -69,13 +71,15 @@ public class DownstreamEncoder {
         }
         Map<String, Object> body = new HashMap<>();
         body.put("type", template.getType());
-        for (Map.Entry<String, String> field : template.getFields().entrySet()) {
-            Object resolved = resolvePlaceholder(field.getValue(), inputs, writeCtx);
+        for (Map.Entry<String, Object> field : template.getFields().entrySet()) {
+            Object resolved = resolvePlaceholder(field.getValue(), inputs, writeCtx, messageId);
             if (resolved != null) {
                 body.put(field.getKey(), resolved);
             }
         }
-        body.put("messageId", messageId);
+        if (!body.containsKey("messageId")) {
+            body.put("messageId", messageId);
+        }
         Set<String> intKeys = new HashSet<>(INT_KEYS);
         if ("setting".equals(template.getType()) && body.containsKey("system")) {
             // system:restart 等非整型字段
@@ -84,18 +88,35 @@ public class DownstreamEncoder {
         return new EncodedDownstream(payload);
     }
 
-    private Object resolvePlaceholder(String expr, Map<String, Object> inputs, Map<String, Object> writeCtx) {
+    @SuppressWarnings("unchecked")
+    private Object resolvePlaceholder(Object expr, Map<String, Object> inputs, Map<String, Object> writeCtx, String messageId) {
         if (expr == null) {
             return null;
         }
-        if ("${value}".equals(expr) && writeCtx != null) {
+        if (expr instanceof Map<?, ?> map) {
+            Map<String, Object> nested = new HashMap<>();
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                Object resolved = resolvePlaceholder(entry.getValue(), inputs, writeCtx, messageId);
+                if (resolved != null) {
+                    nested.put(String.valueOf(entry.getKey()), resolved);
+                }
+            }
+            return nested.isEmpty() ? null : nested;
+        }
+        if (!(expr instanceof String s)) {
+            return expr;
+        }
+        if ("${messageId}".equals(s)) {
+            return messageId;
+        }
+        if ("${value}".equals(s) && writeCtx != null) {
             return toIntOrRaw(writeCtx.get("value"));
         }
-        if (expr.startsWith("${inputs.") && expr.endsWith("}")) {
-            String key = expr.substring("${inputs.".length(), expr.length() - 1);
+        if (s.startsWith("${inputs.") && s.endsWith("}")) {
+            String key = s.substring("${inputs.".length(), s.length() - 1);
             return toIntOrRaw(inputs.get(key));
         }
-        return expr;
+        return s;
     }
 
     private Object toIntOrRaw(Object value) {

@@ -1,0 +1,773 @@
+{
+  "id": "gssm0b",
+  "name": "GSSM0B音频播放器",
+  "description": "智鸟科技 GeekOpen GSSM0B 网络音频播放器，MQTT 私有 JSON 协议",
+  "properties": [
+    {
+      "id": "action",
+      "name": "指令动作",
+      "description": "播放器相关动作，如 player-set-eq/player-play/player-pause 等",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "eqValue",
+      "name": "EQ值",
+      "description": "20 段 EQ 增益 JSON 数组，范围 -13~13 dB",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "fileCount",
+      "name": "文件数量",
+      "valueType": {
+        "type": "int"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "playerMode",
+      "name": "播放模式",
+      "description": "OnePlay/OneLoopPlay/ListPlay/ListLoopPlay",
+      "valueType": {
+        "type": "enum",
+        "elements": [
+          { "value": "OnePlay", "text": "单曲播放" },
+          { "value": "OneLoopPlay", "text": "单曲循环" },
+          { "value": "ListPlay", "text": "列表播放" },
+          { "value": "ListLoopPlay", "text": "列表循环" }
+        ]
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "sdCardFreeSpace",
+      "name": "SD卡剩余空间",
+      "description": "单位 MB",
+      "valueType": {
+        "type": "int",
+        "unit": "MB"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "sdCardTotalSpace",
+      "name": "SD卡总大小",
+      "description": "单位 MB",
+      "valueType": {
+        "type": "int",
+        "unit": "MB"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "sdCardUsage",
+      "name": "SD卡使用率",
+      "description": "单位 %",
+      "valueType": {
+        "type": "int",
+        "unit": "%"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "songs",
+      "name": "歌曲信息",
+      "description": "歌曲信息 JSON，如 {name,size}",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "vol",
+      "name": "音量",
+      "description": "音量大小，0-100",
+      "valueType": {
+        "type": "int",
+        "min": 0,
+        "max": 100
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "keyLock",
+      "name": "按键锁",
+      "description": "0=关闭，1=开启",
+      "valueType": {
+        "type": "enum",
+        "elements": [
+          { "value": "0", "text": "关闭" },
+          { "value": "1", "text": "开启" }
+        ]
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "wifiLock",
+      "name": "配网锁",
+      "description": "0=关闭，1=开启",
+      "valueType": {
+        "type": "enum",
+        "elements": [
+          { "value": "0", "text": "关闭" },
+          { "value": "1", "text": "开启" }
+        ]
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "ip",
+      "name": "IP地址",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "signal",
+      "name": "WiFi信号强度",
+      "description": "WiFi RSSI(dBm)",
+      "valueType": {
+        "type": "int",
+        "unit": "dBm"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "ssid",
+      "name": "WiFi名称",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "version",
+      "name": "固件版本",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "mac",
+      "name": "MAC",
+      "description": "WiFi MAC 或 4G IMEI",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "connMethod",
+      "name": "网络连接方式",
+      "description": "wifi/ethernet/4G",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "dhcpEnable",
+      "name": "DHCP开关",
+      "description": "0=关闭，1=开启",
+      "valueType": {
+        "type": "enum",
+        "elements": [
+          { "value": "0", "text": "关闭" },
+          { "value": "1", "text": "开启" }
+        ]
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "deviceType",
+      "name": "设备型号",
+      "description": "如 GSSM0B",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "lastCommandName",
+      "name": "最近指令名",
+      "description": "设备上报的 commandName，便于调试",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "lastSource",
+      "name": "最近消息来源",
+      "description": "auto=定时上报，command=指令响应",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "voice",
+      "name": "TTS音色",
+      "description": "通义千问 TTS 音色名称",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "text",
+      "name": "TTS文本",
+      "description": "文字转语音内容",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "audioName",
+      "name": "音频名称",
+      "description": "歌曲/音频文件名",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "audioUrl",
+      "name": "音频URL",
+      "description": "网络音频地址",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    },
+    {
+      "id": "filePath",
+      "name": "文件路径",
+      "description": "本地保存路径，如 /sdcard/music/xxx.mp3",
+      "valueType": {
+        "type": "string"
+      },
+      "expands": {
+        "source": "device",
+        "type": ["read", "write", "report"],
+        "storageType": "direct"
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "setEq",
+      "name": "调节EQ",
+      "description": "对应 action=player-set-eq，设置 20 段 EQ 增益",
+      "async": false,
+      "inputs": [
+        {
+          "id": "eqValue",
+          "name": "EQ值",
+          "description": "20 个整数 JSON 数组，范围 -13~13",
+          "valueType": {
+            "type": "string"
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "reset",
+      "name": "恢复出厂设置",
+      "description": "对应 type=setting, system=reset",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "restart",
+      "name": "设备软重启",
+      "description": "对应 type=setting, system=restart",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "queryInfo",
+      "name": "获取设备信息",
+      "description": "对应 type=info",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "object",
+        "properties": []
+      }
+    },
+    {
+      "id": "queryProtocol",
+      "name": "获取设备通讯协议信息",
+      "description": "对应 type=protocol，返回 mqtt/tcp 服务器配置",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "object",
+        "properties": []
+      }
+    },
+    {
+      "id": "addVolume",
+      "name": "音量加",
+      "description": "对应 action=player-add-vol",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "deleteSong",
+      "name": "删除本地歌曲",
+      "description": "对应 action=player-delete",
+      "async": false,
+      "inputs": [
+        {
+          "id": "name",
+          "name": "歌曲名",
+          "valueType": { "type": "string" }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "downloadSong",
+      "name": "下载音频",
+      "description": "对应 action=download",
+      "async": false,
+      "inputs": [
+        {
+          "id": "url",
+          "name": "下载地址",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "filepath",
+          "name": "保存路径",
+          "valueType": { "type": "string" }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "httpPlay",
+      "name": "HTTP播放",
+      "description": "对应 action=player-http-play",
+      "async": false,
+      "inputs": [
+        {
+          "id": "url",
+          "name": "播放地址",
+          "valueType": { "type": "string" }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "httpPlayAndSave",
+      "name": "HTTP播放并保存",
+      "description": "对应 action=player-http-play-save",
+      "async": false,
+      "inputs": [
+        {
+          "id": "url",
+          "name": "播放地址",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "name",
+          "name": "保存文件名",
+          "valueType": { "type": "string" }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "queryPlayerInfo",
+      "name": "查询播放器信息",
+      "description": "对应 action=player-info",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "object",
+        "properties": []
+      }
+    },
+    {
+      "id": "nextSong",
+      "name": "下一曲",
+      "description": "对应 action=player-next",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "pause",
+      "name": "暂停",
+      "description": "对应 action=player-pause",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "play",
+      "name": "播放",
+      "description": "对应 action=player-play",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "prevSong",
+      "name": "上一曲",
+      "description": "对应 action=player-prev",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "sdPlay",
+      "name": "SD卡播放",
+      "description": "对应 action=player-sd-play",
+      "async": false,
+      "inputs": [
+        {
+          "id": "name",
+          "name": "音频名",
+          "valueType": { "type": "string" }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "setMode",
+      "name": "设置播放模式",
+      "description": "对应 action=player-set-mode",
+      "async": false,
+      "inputs": [
+        {
+          "id": "playerMode",
+          "name": "播放模式",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "OnePlay", "text": "单曲播放" },
+              { "value": "OneLoopPlay", "text": "单曲循环" },
+              { "value": "ListPlay", "text": "列表播放" },
+              { "value": "ListLoopPlay", "text": "列表循环" }
+            ]
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "setVolume",
+      "name": "设置音量",
+      "description": "对应 action=player-set-vol",
+      "async": false,
+      "inputs": [
+        {
+          "id": "value",
+          "name": "音量值",
+          "valueType": {
+            "type": "int",
+            "min": 0,
+            "max": 100
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "stop",
+      "name": "停止播放",
+      "description": "对应 action=player-stop",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "subVolume",
+      "name": "音量减",
+      "description": "对应 action=player-sub-vol",
+      "async": false,
+      "inputs": [],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "setWifiLock",
+      "name": "设置WiFi配网锁",
+      "async": false,
+      "inputs": [
+        {
+          "id": "wifiLock",
+          "name": "配网锁",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "0", "text": "关闭" },
+              { "value": "1", "text": "开启" }
+            ]
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "setCustomMqtt",
+      "name": "自定义MQTT服务器",
+      "description": "对应 type=custom，配置自定义MQTT服务器参数",
+      "async": false,
+      "inputs": [
+        {
+          "id": "clientId",
+          "name": "客户端ID",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "username",
+          "name": "用户名",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "password",
+          "name": "密码",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "server",
+          "name": "服务器地址",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "port",
+          "name": "端口",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "subcribe",
+          "name": "订阅主题",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "publish",
+          "name": "发布主题",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "protocol",
+          "name": "协议类型",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "mqtt", "text": "MQTT" }
+            ]
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "setCustomTcp",
+      "name": "自定义TCP服务器",
+      "description": "对应 type=custom，配置自定义TCP服务器参数",
+      "async": false,
+      "inputs": [
+        {
+          "id": "server",
+          "name": "服务器地址",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "port",
+          "name": "端口",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "protocol",
+          "name": "协议类型",
+          "valueType": {
+            "type": "enum",
+            "elements": [
+              { "value": "tcp", "text": "TCP" }
+            ]
+          }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    },
+    {
+      "id": "ttsPlay",
+      "name": "文字转语音播放",
+      "description": "对应 action=tts-play",
+      "async": false,
+      "inputs": [
+        {
+          "id": "text",
+          "name": "文本内容",
+          "valueType": { "type": "string" }
+        },
+        {
+          "id": "voice",
+          "name": "音色",
+          "valueType": { "type": "string" }
+        }
+      ],
+      "output": {
+        "type": "boolean"
+      }
+    }
+  ],
+  "events": []
+}
